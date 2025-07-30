@@ -7,7 +7,8 @@ def error_message_detail(error_object, error_detail:sys):
     # Get the file where the exception occurs
     file_name=exc_tb.tb_frame.f_code.co_filename
     
-    error_message="Error occurred in file: [{0}] \n line number: [{1}] \n the error message: [{2}]".format(
+    # Create the custom error message.
+    error_message="\n Error occurred in file: [{0}] \n Line number: [{1}] \n Error Message: [{2}]".format(
         file_name, exc_tb.tb_lineno, str(error_object)
     )
 
