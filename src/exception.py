@@ -1,4 +1,5 @@
 import sys
+from src.logger import logging
 
 def error_message_detail(error_object, error_detail:sys):
     # exc_tb will contain all info related to exception like file name, line number, etc
