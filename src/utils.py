@@ -4,7 +4,9 @@ import numpy as np
 import pandas as pd
 import dill
 from src.exception import CustomException
+from src.logger import logging
 from sklearn.metrics import r2_score
+from sklearn.model_selection import RandomizedSearchCV, cross_val_score, KFold, StratifiedKFold
 
 def save_object(file_path, obj):
     try:
@@ -22,28 +24,43 @@ def save_object(file_path, obj):
     except CustomException as e:
         raise CustomException(e, sys)
     
-def evaluate_models(X_train, y_train, X_test, y_test, models):
+def evaluate_models(X_train, y_train, X_test, y_test, models, params):
     try:
         reports={}
+        best_models={}
         # loop through the models dictionary
         for i in range(len(list(models))):
             
             # Get a model
             model=list(models.values())[i]
 
+            # Get model specific hyperparameters
+            param=params[list(models.keys())[i]]
+
+            # Create randomized search cv object to initiate hyperparameter tuning
+            random_cv=RandomizedSearchCV(model, param, cv=5)
+
             # Train the model
-            model.fit(X_train, y_train)
+            random_cv.fit(X_train, y_train)
             
-            # Predict the output using test dataset
-            y_test_pred=model.predict(X_test)
+            # Get the best model of each algorithm by setting the best parameters
+            model.set_params(**random_cv.best_params_)
 
-            # get r2 score on y_test predictions
-            test_model_score=r2_score(y_test, y_test_pred)
+            # Train the tuned model using training set
+            model.fit(X_train, y_train)
 
-            # Add entry to report dictionary
-            reports[list(models.keys())[i]]=test_model_score
+            # Add it to the dictionary of best models
+            best_models[list(models.keys())[i]]=model
+
+        # Use KFold for regression
+        cv_strategy = KFold(n_splits=5, shuffle=True, random_state=42)
+        for name, model in best_models.items():
+            logging.info(f"Evaluating {name} with cross-validation...")
         
-        return reports
+            r2_scores = cross_val_score(model, X_train, y_train, cv=cv_strategy, scoring='r2')
+
+            reports[name] = r2_scores.mean()
+        return reports, best_models
     
     except Exception as e:
         raise CustomException(e, sys)
