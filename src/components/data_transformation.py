@@ -79,7 +79,7 @@ class DataTransformation:
             train_df=pd.read_csv(train_path)
             test_df=pd.read_csv(test_path)
 
-            logging.info("Train and tesy dataset read completely")
+            logging.info("Train and test dataset read completely")
 
             preprocessing_obj=self.get_data_transformer()
 
