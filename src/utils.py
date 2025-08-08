@@ -45,6 +45,8 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, params):
             
             # Get the best model of each algorithm by setting the best parameters
             model.set_params(**random_cv.best_params_)
+            
+            logging.info(f"Best parameters for {list(models.keys())[i]} : {dict(random_cv.best_params_)}")
 
             # Train the tuned model using training set
             model.fit(X_train, y_train)
@@ -59,8 +61,19 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, params):
         
             r2_scores = cross_val_score(model, X_train, y_train, cv=cv_strategy, scoring='r2')
 
+            # Get mean r2 score for each model. used for comparison. 
             reports[name] = r2_scores.mean()
+            logging.info(f"Mean r2 score for {name} : {reports[name]}")
+            
         return reports, best_models
     
+    except Exception as e:
+        raise CustomException(e, sys)
+    
+
+def load_object(file_path):
+    try:
+        with(open(file_path, "rb")) as file_obj:
+            return dill.load(file_obj)    
     except Exception as e:
         raise CustomException(e, sys)
