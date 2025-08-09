@@ -9,7 +9,7 @@ from sklearn.ensemble import (
     RandomForestRegressor
 )
 
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
 from sklearn.metrics import r2_score
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
@@ -18,6 +18,7 @@ from xgboost import XGBRegressor
 from src.exception import CustomException
 from src.logger import logging
 from src.utils import save_object, evaluate_models
+from src.components.data_transformation import DataTransformation
 
 @dataclass
 class ModelTrainerConfig:
@@ -28,22 +29,15 @@ class ModelTrainer:
         self.model_trainer_config=ModelTrainerConfig()
 
     
-    def initiate_model_trainer(self, train_array, test_array):
+    def initiate_model_trainer(self, train_data, test_data, data_transformation_obj):
         try:
-            logging.info("Split train and test ipout data")
-            X_train, y_train, X_test, y_test = (
-                train_array[:, :-1],
-                train_array[:, -1],
-                test_array[:, :-1],
-                test_array[:, -1]
-            )
-        
+            
             # Create a dictionary of all models to be trained
             models={
                 "Random Forest": RandomForestRegressor(),
                 "Decision Tree": DecisionTreeRegressor(),
                 "Gradient Boosting": GradientBoostingRegressor(),
-                "Linear Regression": LinearRegression(),
+                "Linear Regression": Ridge(alpha=1.0), # To deal with multi collinearity
                 "K-Neighbors Regressor": KNeighborsRegressor(),
                 "XGB Regressor": XGBRegressor(),
                 "CatBoosting Regressor": CatBoostRegressor(verbose=False),
@@ -82,12 +76,11 @@ class ModelTrainer:
 
             # Perform hyperparameter tuning
             models_report, best_models=evaluate_models(
-                X_train=X_train, 
-                y_train=y_train, 
-                X_test=X_test, 
-                y_test=y_test, 
+                train_data,
+                test_data, 
                 models=models, 
-                params=params
+                params=params,
+                data_transformation_obj=data_transformation_obj
             )
 
             # Get the model with the best score
@@ -107,7 +100,23 @@ class ModelTrainer:
                 file_path=self.model_trainer_config.trained_model_file_path,
                 obj=best_model
             )
-
+            
+            # If base mode is Linear Regression, then drop one column from OneHot Encoding
+            if best_model_name=="Linear Regression":    
+                data_transformation_obj=DataTransformation()
+                train_arr, test_arr, _=data_transformation_obj.initiate_data_transformation(train_data, test_data, 1)
+            else:
+                data_transformation_obj=DataTransformation()
+                train_arr, test_arr, _=data_transformation_obj.initiate_data_transformation(train_data, test_data)
+            
+            logging.info("Split train and test input data")
+            X_train, y_train, X_test, y_test = (
+                train_arr[:, :-1],
+                train_arr[:, -1],
+                test_arr[:, :-1],
+                test_arr[:, -1]
+            )
+        
             # Use the best model to predict target variable using test set
             predicted=best_model.predict(X_test)
 

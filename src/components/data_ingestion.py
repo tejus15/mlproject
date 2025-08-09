@@ -71,5 +71,5 @@ if __name__=="__main__":
     # Perform training of models
     model_trainer=ModelTrainer()
 
-    # Get r2_score
-    print(model_trainer.initiate_model_trainer(train_array=train_arr, test_array=test_arr))
+    # Get best model name, r2_score
+    print(model_trainer.initiate_model_trainer(train_data=train_data, test_data=test_data))
