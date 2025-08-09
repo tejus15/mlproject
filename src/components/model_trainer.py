@@ -29,9 +29,15 @@ class ModelTrainer:
         self.model_trainer_config=ModelTrainerConfig()
 
     
-    def initiate_model_trainer(self, train_data, test_data, data_transformation_obj):
+    def initiate_model_trainer(self, train_array, test_array):
         try:
-            
+            logging.info("Split train and test ipout data")
+            X_train, y_train, X_test, y_test = (
+                train_array[:, :-1],
+                train_array[:, -1],
+                test_array[:, :-1],
+                test_array[:, -1]
+            )
             # Create a dictionary of all models to be trained
             models={
                 "Random Forest": RandomForestRegressor(),
@@ -75,13 +81,8 @@ class ModelTrainer:
             }
 
             # Perform hyperparameter tuning
-            models_report, best_models=evaluate_models(
-                train_data,
-                test_data, 
-                models=models, 
-                params=params,
-                data_transformation_obj=data_transformation_obj
-            )
+            models_report, best_models=evaluate_models(X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test, 
+                                                       models=models, params=params)
 
             # Get the model with the best score
             best_model_score=max(sorted(models_report.values()))
@@ -101,22 +102,6 @@ class ModelTrainer:
                 obj=best_model
             )
             
-            # If base mode is Linear Regression, then drop one column from OneHot Encoding
-            if best_model_name=="Linear Regression":    
-                data_transformation_obj=DataTransformation()
-                train_arr, test_arr, _=data_transformation_obj.initiate_data_transformation(train_data, test_data, 1)
-            else:
-                data_transformation_obj=DataTransformation()
-                train_arr, test_arr, _=data_transformation_obj.initiate_data_transformation(train_data, test_data)
-            
-            logging.info("Split train and test input data")
-            X_train, y_train, X_test, y_test = (
-                train_arr[:, :-1],
-                train_arr[:, -1],
-                test_arr[:, :-1],
-                test_arr[:, -1]
-            )
-        
             # Use the best model to predict target variable using test set
             predicted=best_model.predict(X_test)
 
