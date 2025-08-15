@@ -2,6 +2,8 @@
 __pycache__/
 *.py[codz]
 *$py.class
+ECR URL.txt
+Tejus_Sharma_accessKeys.csv
 
 # C extensions
 *.so
