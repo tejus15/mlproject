@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: http://${{ secrets.EC2_HOST }}  # ✅ Fixed
+      url: http://13.217.27.203  # ✅ Fixed
     steps:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
