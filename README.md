@@ -13,3 +13,5 @@ Website Prediction Form:
 Website Score Prediction Based on User Input:
 <img width="1903" height="1017" alt="image" src="https://github.com/user-attachments/assets/e8e36df9-20e8-477d-b8da-b84c46e2bf3f" />
 
+Website on ipad:
+![60843](https://github.com/user-attachments/assets/00825661-d8f9-4fbb-a4f7-b6db718dfcf1)
