@@ -11,7 +11,7 @@ from src.utils import CustomData, load_object
 from src.logger import logging
 from src.exception import CustomException
 
-# Gives us entry point to the application
+# Gives us entry point to the application.
 application=Flask(__name__)
 
 app=application
