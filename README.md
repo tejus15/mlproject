@@ -10,7 +10,8 @@ Educational background (parental education, test prep completion, school lunch t
 Academic performance (reading and writing test scores)<br/></i>
 
 ## Dataset Description
-Features Used for Prediction
+Dataset can be found here: https://www.kaggle.com/datasets/spscientist/students-performance-in-exams/data<br/>
+Features Used for Prediction:
 ### Demographic Data:
 
 Gender<br/>
