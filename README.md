@@ -5,9 +5,9 @@ This project aims to predict how well students will perform on math tests using 
 ## Project Goals
 The main objective is to create a machine learning model that can accurately predict a student's math test score based on:
 
-<b>Demographic information (gender, race, ethnicity) <br/>
+<i>Demographic information (gender, race, ethnicity) <br/>
 Educational background (parental education, test prep completion, school lunch type)<br/>
-Academic performance (reading and writing test scores)<br/></b>
+Academic performance (reading and writing test scores)<br/></i>
 
 ## Dataset Description
 Features Used for Prediction
@@ -20,7 +20,7 @@ Race/Ethnicity
 Parental level of education<br/>
 Test preparation course completion status<br/>
 Lunch type (standard vs. free/reduced)<br/>
-<b>Note about lunch programs: Students from low-income families are eligible for meal assistance programs. Free meals are provided to children in households with incomes below 130% of the poverty level or those receiving SNAP/TANF benefits. Reduced-price meals are available for families with incomes between 130-185% of the poverty line.</b>
+<i>Note about lunch programs: Students from low-income families are eligible for meal assistance programs. Free meals are provided to children in households with incomes below 130% of the poverty level or those receiving SNAP/TANF benefits. Reduced-price meals are available for families with incomes between 130-185% of the poverty line.</i>
 
 ### Academic Performance:
 
